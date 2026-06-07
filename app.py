@@ -16,7 +16,11 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("📊 Consolidador Prova Paulista")
+st.title("📊 Consolidador Prova Paulista - Oficial 1.0")
+
+nome_escola = st.text_input(
+    "🏫 Nome da Escola"
+)
 
 
 def normalizar(txt):
@@ -96,24 +100,40 @@ def cor_status(txt):
 
 
 xlsm = st.file_uploader(
-    "Planilha XLSM",
+    "📎 Planilha XLSM",
     type=["xlsm"]
 )
 
 zip_file = st.file_uploader(
-    "Arquivo ZIP",
+    "📦 Arquivo ZIP",
     type=["zip"]
 )
 
 
-if st.button("Gerar Consolidado"):
+if st.button("🚀 Gerar Consolidado"):
+
+    if not nome_escola.strip():
+
+        st.error(
+            "Informe o nome da escola."
+        )
+
+        st.stop()
 
     if not xlsm:
-        st.error("Selecione o XLSM.")
+
+        st.error(
+            "Selecione o XLSM."
+        )
+
         st.stop()
 
     if not zip_file:
-        st.error("Selecione o ZIP.")
+
+        st.error(
+            "Selecione o ZIP."
+        )
+
         st.stop()
 
     resultados = {}
@@ -147,7 +167,9 @@ if st.button("Gerar Consolidado"):
 
             for arq in arquivos:
 
-                if arq.lower().endswith(".xlsx"):
+                if arq.lower().endswith(
+                    ".xlsx"
+                ):
 
                     arquivos_excel.append(
                         os.path.join(
@@ -216,6 +238,9 @@ if st.button("Gerar Consolidado"):
 
     encontrados = 0
     nao_encontrados = 0
+    lp_preenchidos = 0
+    mat_preenchidos = 0
+    total_alunos = 0
 
     for ws in wb.worksheets:
 
@@ -223,11 +248,6 @@ if st.button("Gerar Consolidado"):
             4,
             ws.max_row + 1
         ):
-
-            turma_original = ws.cell(
-                linha,
-                1
-            ).value
 
             estudante = ws.cell(
                 linha,
@@ -237,8 +257,13 @@ if st.button("Gerar Consolidado"):
             if not estudante:
                 continue
 
+            total_alunos += 1
+
             turma = turma_curta(
-                turma_original
+                ws.cell(
+                    linha,
+                    1
+                ).value
             )
 
             nome = normalizar(
@@ -262,55 +287,85 @@ if st.button("Gerar Consolidado"):
             lp = reg["LP"]
             mat = reg["MAT"]
 
-            ws.cell(
-                linha,
-                7
-            ).value = lp
+            if pd.notna(lp):
 
-            ws.cell(
-                linha,
-                7
-            ).number_format = "0.0%"
+                ws.cell(
+                    linha,
+                    7
+                ).value = lp
 
-            st_lp = status(lp)
+                ws.cell(
+                    linha,
+                    7
+                ).number_format = "0.0%"
 
-            ws.cell(
-                linha,
-                8
-            ).value = st_lp
+                st_lp = status(
+                    float(lp)
+                )
 
-            ws.cell(
-                linha,
-                8
-            ).fill = PatternFill(
-                "solid",
-                fgColor=cor_status(st_lp)
-            )
+                ws.cell(
+                    linha,
+                    8
+                ).value = st_lp
 
-            ws.cell(
-                linha,
-                9
-            ).value = mat
+                ws.cell(
+                    linha,
+                    8
+                ).fill = PatternFill(
+                    "solid",
+                    fgColor=cor_status(
+                        st_lp
+                    )
+                )
 
-            ws.cell(
-                linha,
-                9
-            ).number_format = "0.0%"
+                lp_preenchidos += 1
 
-            st_mat = status(mat)
+            else:
 
-            ws.cell(
-                linha,
-                10
-            ).value = st_mat
+                ws.cell(
+                    linha,
+                    8
+                ).value = ""
 
-            ws.cell(
-                linha,
-                10
-            ).fill = PatternFill(
-                "solid",
-                fgColor=cor_status(st_mat)
-            )
+            if pd.notna(mat):
+
+                ws.cell(
+                    linha,
+                    9
+                ).value = mat
+
+                ws.cell(
+                    linha,
+                    9
+                ).number_format = "0.0%"
+
+                st_mat = status(
+                    float(mat)
+                )
+
+                ws.cell(
+                    linha,
+                    10
+                ).value = st_mat
+
+                ws.cell(
+                    linha,
+                    10
+                ).fill = PatternFill(
+                    "solid",
+                    fgColor=cor_status(
+                        st_mat
+                    )
+                )
+
+                mat_preenchidos += 1
+
+            else:
+
+                ws.cell(
+                    linha,
+                    10
+                ).value = ""
 
             encontrados += 1
 
@@ -322,17 +377,55 @@ if st.button("Gerar Consolidado"):
 
     saida_xlsm.seek(0)
 
-    st.success(
-        f"Encontrados: {encontrados}"
+    st.subheader(
+        "📊 Relatório"
     )
 
-    st.warning(
-        f"Não encontrados: {nao_encontrados}"
+    c1, c2, c3, c4, c5 = st.columns(5)
+
+    c1.metric(
+        "Total",
+        total_alunos
+    )
+
+    c2.metric(
+        "Encontrados",
+        encontrados
+    )
+
+    c3.metric(
+        "Não Encontrados",
+        nao_encontrados
+    )
+
+    c4.metric(
+        "LP",
+        lp_preenchidos
+    )
+
+    c5.metric(
+        "MAT",
+        mat_preenchidos
+    )
+
+    nome_arquivo = normalizar(
+        nome_escola
+    ).replace(
+        " ",
+        "_"
     )
 
     st.download_button(
         "📥 Baixar XLSM",
         data=saida_xlsm.getvalue(),
-        file_name="CONSOLIDADO.xlsm",
+        file_name=f"{nome_arquivo}_CONSOLIDADO.xlsm",
         mime="application/vnd.ms-excel"
     )
+
+st.divider()
+
+if st.button("🔄 Limpar Tudo"):
+
+    st.session_state.clear()
+
+    st.rerun()
