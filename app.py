@@ -3,8 +3,12 @@ import pandas as pd
 import zipfile
 import tempfile
 import os
+import re
+import unicodedata
+from io import BytesIO
 
 from openpyxl import load_workbook
+from openpyxl.styles import PatternFill
 
 st.set_page_config(
     page_title="Consolidador Prova Paulista",
@@ -14,146 +18,73 @@ st.set_page_config(
 
 st.title("📊 Consolidador Prova Paulista")
 
-st.write(
-    "Versão de Diagnóstico - Leitura dos Arquivos"
-)
+def normalizar(texto):
+
+    if texto is None:
+        return ""
+
+    texto = str(texto)
+
+    texto = unicodedata.normalize(
+        'NFKD',
+        texto
+    ).encode(
+        'ASCII',
+        'ignore'
+    ).decode(
+        'utf-8'
+    )
+
+    texto = texto.upper()
+
+    texto = re.sub(
+        r'\s+',
+        ' ',
+        texto
+    )
+
+    return texto.strip()
+
+def calcular_status(valor):
+
+    if valor < 0.50:
+        return "Abaixo do Básico"
+
+    elif valor < 0.70:
+        return "Básico"
+
+    elif valor < 0.90:
+        return "Adequado"
+
+    return "Proficiente"
+
+def cor_status(status):
+
+    cores = {
+
+        "Abaixo do Básico": "F4CCCC",
+        "Básico": "FFF2CC",
+        "Adequado": "D9EAD3",
+        "Proficiente": "CFE2F3"
+
+    }
+
+    return cores.get(
+        status,
+        "FFFFFF"
+    )
 
 xlsm = st.file_uploader(
-    "Selecione a planilha XLSM",
+    "Planilha XLSM",
     type=["xlsm"]
 )
 
 zip_file = st.file_uploader(
-    "Selecione o arquivo ZIP",
+    "Arquivo ZIP",
     type=["zip"]
 )
+if st.button("Gerar Consolidado"):
 
-if st.button("Analisar Arquivos"):
-
-    if not xlsm:
-        st.error("Selecione o XLSM.")
-        st.stop()
-
-    if not zip_file:
-        st.error("Selecione o ZIP.")
-        st.stop()
-
-    try:
-
-        st.subheader("📁 Analisando XLSM")
-
-        with tempfile.NamedTemporaryFile(
-            delete=False,
-            suffix=".xlsm"
-        ) as tmp_xlsm:
-
-            tmp_xlsm.write(
-                xlsm.getbuffer()
-            )
-
-            caminho_xlsm = tmp_xlsm.name
-
-        wb = load_workbook(
-            caminho_xlsm,
-            keep_vba=True
-        )
-
-        abas = wb.sheetnames
-
-        st.success(
-            f"Abas encontradas: {len(abas)}"
-        )
-
-        for aba in abas:
-            st.write("•", aba)
-
-        st.divider()
-
-        st.subheader("📦 Analisando ZIP")
-
-        with tempfile.TemporaryDirectory() as pasta:
-
-            caminho_zip = os.path.join(
-                pasta,
-                zip_file.name
-            )
-
-            with open(
-                caminho_zip,
-                "wb"
-            ) as f:
-
-                f.write(
-                    zip_file.getbuffer()
-                )
-
-            with zipfile.ZipFile(
-                caminho_zip,
-                "r"
-            ) as z:
-
-                z.extractall(pasta)
-
-            arquivos_excel = []
-
-            for raiz, dirs, arquivos in os.walk(pasta):
-
-                for arq in arquivos:
-
-                    if arq.lower().endswith(
-                        ".xlsx"
-                    ):
-                        arquivos_excel.append(
-                            os.path.join(
-                                raiz,
-                                arq
-                            )
-                        )
-
-            st.success(
-                f"Arquivos Excel encontrados: {len(arquivos_excel)}"
-            )
-
-            total_alunos = 0
-
-            for arq in arquivos_excel:
-
-                try:
-
-                    df = pd.read_excel(
-                        arq
-                    )
-
-                    total_alunos += len(df)
-
-                    st.write(
-                        f"📄 {os.path.basename(arq)} - {len(df)} alunos"
-                    )
-
-                except Exception as erro:
-
-                    st.error(
-                        f"Erro ao ler {os.path.basename(arq)}"
-                    )
-
-            st.divider()
-
-            st.subheader("📊 Resultado")
-
-            st.metric(
-                "Arquivos Excel",
-                len(arquivos_excel)
-            )
-
-            st.metric(
-                "Total de Registros",
-                total_alunos
-            )
-
-            st.success(
-                "Leitura concluída com sucesso."
-            )
-
-    except Exception as erro:
-
-        st.error(str(erro))
+    st.info(
+        "Versão de consolidação em preparação..."
+    )
