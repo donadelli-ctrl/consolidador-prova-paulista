@@ -419,8 +419,8 @@ c1, c2, c3, c4, c5 = st.columns(5)
         "_"
     )
 
-    st.download_button(
-        "📥 Baixar XLSM",
+   st.download_button(
+    f"📥 Baixar {nome_escola.upper()} XLSM",
         data=saida_xlsm.getvalue(),
         file_name=f"{nome_arquivo}_CONSOLIDADO.xlsm",
         mime="application/vnd.ms-excel"
