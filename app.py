@@ -275,18 +275,10 @@ if st.button("🚀 Gerar Consolidado"):
                 nome
             )
 
-           if chave not in resultados:
+            if chave not in resultados:
 
-    nao_encontrados += 1
-
-    nao_localizados.append(
-        {
-            "Turma": turma,
-            "Nome": nome
-        }
-    )
-
-    continue
+                nao_encontrados += 1
+                continue
 
             reg = resultados[
                 chave
@@ -395,41 +387,29 @@ st.subheader(
 
 c1, c2, c3, c4, c5 = st.columns(5)
 
-   c1.metric(
-    "👨‍🎓 Total",
-    total_alunos
-)
-
-    c2.metric(
-    "Encontrados",
-    encontrados
-)
-
-  c3.metric(
-    "❌ Não Encontrados",
-    nao_encontrados
-)
-
-    c4.metric(
-    "📚 LP",
-    lp_preenchidos
-)
-
-    c5.metric(
-    "📐 MAT",
-    mat_preenchidos
-)
-if nao_localizados:
-
-    st.warning(
-        f"{len(nao_localizados)} alunos não encontrados."
+    c1.metric(
+        "Total",
+        total_alunos
     )
 
-    st.dataframe(
-        pd.DataFrame(
-            nao_localizados
-        ),
-        use_container_width=True
+    c2.metric(
+        "Encontrados",
+        encontrados
+    )
+
+    c3.metric(
+        "Não Encontrados",
+        nao_encontrados
+    )
+
+    c4.metric(
+        "LP",
+        lp_preenchidos
+    )
+
+    c5.metric(
+        "MAT",
+        mat_preenchidos
     )
 
     nome_arquivo = normalizar(
@@ -439,8 +419,8 @@ if nao_localizados:
         "_"
     )
 
-   st.download_button(
-    f"📥 Baixar {nome_escola.upper()} XLSM",
+    st.download_button(
+        "📥 Baixar XLSM",
         data=saida_xlsm.getvalue(),
         file_name=f"{nome_arquivo}_CONSOLIDADO.xlsm",
         mime="application/vnd.ms-excel"
