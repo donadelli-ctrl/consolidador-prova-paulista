@@ -377,11 +377,15 @@ if st.button("🚀 Gerar Consolidado"):
 
     saida_xlsm.seek(0)
 
-    st.subheader(
-        "📊 Relatório"
-    )
+st.success(
+    f"🏫 Escola: {nome_escola}"
+)
 
-    c1, c2, c3, c4, c5 = st.columns(5)
+st.subheader(
+    "📊 Relatório"
+)
+
+c1, c2, c3, c4, c5 = st.columns(5)
 
     c1.metric(
         "Total",
