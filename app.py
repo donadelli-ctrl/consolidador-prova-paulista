@@ -287,10 +287,7 @@ if st.button("🚀 Gerar Consolidado"):
             lp = reg["LP"]
             mat = reg["MAT"]
 
-            if (
-                 pd.notna(lp)
-                 and str(lp).strip() != ""
-            ):
+            if pd.notna(lp):
 
                 ws.cell(
                     linha,
@@ -330,10 +327,7 @@ if st.button("🚀 Gerar Consolidado"):
                     8
                 ).value = ""
 
-           if (
-               pd.notna(mat)
-               and str(mat).strip() != ""
-           ):
+            if pd.notna(mat):
 
                 ws.cell(
                     linha,
@@ -383,40 +377,36 @@ if st.button("🚀 Gerar Consolidado"):
 
     saida_xlsm.seek(0)
 
-st.success(
-    f"🏫 Escola: {nome_escola}"
-)
-
-st.subheader(
-    "📊 Relatório"
-)
+    st.subheader(
+        "📊 Relatório"
+    )
 
     c1, c2, c3, c4, c5 = st.columns(5)
 
-   c1.metric(
-    "👨‍🎓 Total",
-    total_alunos
-)
+    c1.metric(
+        "Total",
+        total_alunos
+    )
 
-   c2.metric(
-    "✅ Encontrados",
-    encontrados
-)
+    c2.metric(
+        "Encontrados",
+        encontrados
+    )
 
-  c3.metric(
-    "❌ Não Encontrados",
-    nao_encontrados
-)
+    c3.metric(
+        "Não Encontrados",
+        nao_encontrados
+    )
 
-  c4.metric(
-    "📚 LP",
-    lp_preenchidos
-)
+    c4.metric(
+        "LP",
+        lp_preenchidos
+    )
 
     c5.metric(
-    "📐 MAT",
-    mat_preenchidos
-)
+        "MAT",
+        mat_preenchidos
+    )
 
     nome_arquivo = normalizar(
         nome_escola
@@ -425,8 +415,8 @@ st.subheader(
         "_"
     )
 
-   st.download_button(
-    f"📥 Baixar {nome_escola.upper()} XLSM",
+    st.download_button(
+        "📥 Baixar XLSM",
         data=saida_xlsm.getvalue(),
         file_name=f"{nome_arquivo}_CONSOLIDADO.xlsm",
         mime="application/vnd.ms-excel"
