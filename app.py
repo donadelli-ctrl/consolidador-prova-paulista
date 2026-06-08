@@ -393,24 +393,24 @@ c1, c2, c3, c4, c5 = st.columns(5)
 )
 
     c2.metric(
-        "Encontrados",
-        encontrados
-    )
+    "Encontrados",
+    encontrados
+)
 
-    c3.metric(
-        "Não Encontrados",
-        nao_encontrados
-    )
+  c3.metric(
+    "❌ Não Encontrados",
+    nao_encontrados
+)
 
     c4.metric(
-        "LP",
-        lp_preenchidos
-    )
+    "📚 LP",
+    lp_preenchidos
+)
 
     c5.metric(
-        "MAT",
-        mat_preenchidos
-    )
+    "📐 MAT",
+    mat_preenchidos
+)
 
     nome_arquivo = normalizar(
         nome_escola
