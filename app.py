@@ -55,17 +55,36 @@ def turma_curta(texto):
 
     texto = normalizar(texto)
 
-    numero = re.search(r"(\d+)", texto)
+    serie = re.search(
+        r"([123])\s*A?\s*SERIE",
+        texto
+    )
+
+    if serie:
+
+        numero = serie.group(1)
+
+    else:
+
+        numero = re.search(
+            r"(\d+)",
+            texto
+        )
+
+        if numero:
+            numero = numero.group(1)
+        else:
+            return texto
 
     letra = re.search(
         r"\b([A-Z])\b",
         texto
     )
 
-    if not numero or not letra:
+    if not letra:
         return texto
 
-    turma = f"{numero.group(1)}{letra.group(1)}"
+    turma = f"{numero}{letra.group(1)}"
 
     if "ADMINISTRACAO" in texto:
         turma += " ADM"
