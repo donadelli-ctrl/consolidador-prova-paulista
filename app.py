@@ -471,6 +471,10 @@ st.divider()
 
 if st.button("🔄 Limpar Tudo"):
 
-    st.session_state.clear()
+    for chave in list(st.session_state.keys()):
+        del st.session_state[chave]
+
+    st.cache_data.clear()
+    st.cache_resource.clear()
 
     st.rerun()
