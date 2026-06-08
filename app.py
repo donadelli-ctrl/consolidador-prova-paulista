@@ -387,10 +387,10 @@ st.subheader(
 
 c1, c2, c3, c4, c5 = st.columns(5)
 
-    c1.metric(
-        "Total",
-        total_alunos
-    )
+   c1.metric(
+    "👨‍🎓 Total",
+    total_alunos
+)
 
     c2.metric(
         "Encontrados",
