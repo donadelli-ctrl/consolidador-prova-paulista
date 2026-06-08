@@ -387,40 +387,40 @@ st.subheader(
 
 c1, c2, c3, c4, c5 = st.columns(5)
 
-    c1.metric(
-        "Total",
-        total_alunos
-    )
+c1.metric(
+    "Total",
+    total_alunos
+)
 
-    c2.metric(
-        "Encontrados",
-        encontrados
-    )
+c2.metric(
+    "Encontrados",
+    encontrados
+)
 
-    c3.metric(
-        "Não Encontrados",
-        nao_encontrados
-    )
+c3.metric(
+    "Não Encontrados",
+    nao_encontrados
+)
 
-    c4.metric(
-        "LP",
-        lp_preenchidos
-    )
+c4.metric(
+    "LP",
+    lp_preenchidos
+)
 
-    c5.metric(
-        "MAT",
-        mat_preenchidos
-    )
+c5.metric(
+    "MAT",
+    mat_preenchidos
+)
 
-    nome_arquivo = normalizar(
-        nome_escola
-    ).replace(
-        " ",
-        "_"
-    )
+nome_arquivo = normalizar(
+    nome_escola
+).replace(
+    " ",
+    "_"
+)
 
-    st.download_button(
-        "📥 Baixar XLSM",
+st.download_button(
+    "📥 Baixar XLSM",
         data=saida_xlsm.getvalue(),
         file_name=f"{nome_arquivo}_CONSOLIDADO.xlsm",
         mime="application/vnd.ms-excel"
