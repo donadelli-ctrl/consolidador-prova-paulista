@@ -275,10 +275,18 @@ if st.button("🚀 Gerar Consolidado"):
                 nome
             )
 
-            if chave not in resultados:
+           if chave not in resultados:
 
-                nao_encontrados += 1
-                continue
+    nao_encontrados += 1
+
+    nao_localizados.append(
+        {
+            "Turma": turma,
+            "Nome": nome
+        }
+    )
+
+    continue
 
             reg = resultados[
                 chave
@@ -411,6 +419,18 @@ c1, c2, c3, c4, c5 = st.columns(5)
     "📐 MAT",
     mat_preenchidos
 )
+if nao_localizados:
+
+    st.warning(
+        f"{len(nao_localizados)} alunos não encontrados."
+    )
+
+    st.dataframe(
+        pd.DataFrame(
+            nao_localizados
+        ),
+        use_container_width=True
+    )
 
     nome_arquivo = normalizar(
         nome_escola
