@@ -89,14 +89,7 @@ def turma_curta(texto):
         turma += " LOG"
 
     return turma
-    )
-
-    if numero and letra:
-        return f"{numero.group(1)}{letra.group(1)}"
-
-    return texto
-
-
+  
 def status(valor):
 
     if valor < 0.50:
