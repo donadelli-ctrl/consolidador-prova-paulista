@@ -62,6 +62,35 @@ def turma_curta(texto):
         texto
     )
 
+    if not numero or not letra:
+        return texto
+
+    turma = f"{numero.group(1)}{letra.group(1)}"
+
+    if "ADMINISTRACAO" in texto:
+        turma += " ADM"
+
+    elif "DESENVOLVIMENTO" in texto:
+        turma += " DS"
+
+    elif "ELETRONICA" in texto:
+        turma += " ELET"
+
+    elif "AGRONEGOCIO" in texto:
+        turma += " AGRO"
+
+    elif "ENFERMAGEM" in texto:
+        turma += " ENF"
+
+    elif "VENDAS" in texto:
+        turma += " VENDAS"
+
+    elif "LOGISTICA" in texto:
+        turma += " LOG"
+
+    return turma
+    )
+
     if numero and letra:
         return f"{numero.group(1)}{letra.group(1)}"
 
